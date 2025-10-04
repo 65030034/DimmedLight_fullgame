@@ -58,7 +58,8 @@ namespace DimmedLight.Gameplay.MainMenu
                 }
                 else
                 {
-                    Game.ChangeScreen(new MenuScreen(Game, Game.Graphics, GraphicsDevice, Content));
+                    // ไปหน้า Gameplay เมื่อกด Enter ที่หน้า 3
+                    Game.ChangeScreen(new GameplayScreen(Game, Game.Graphics, GraphicsDevice, Content));
                 }
             }
             else if (backPage)
@@ -87,10 +88,10 @@ namespace DimmedLight.Gameplay.MainMenu
 
             spriteBatch.Begin();
 
-            // 1. วาดพื้นหลังให้เต็มหน้าจอก่อนเสมอ
+            // วาดพื้นหลังให้เต็มหน้าจอ
             spriteBatch.Draw(_background, GraphicsDevice.Viewport.Bounds, Color.White);
 
-            // 2. เลือก Texture ของหน้าปัจจุบันที่จะวาด
+            // เลือก Texture ของหน้าปัจจุบัน
             Texture2D currentPageTexture = null;
             if (_currentPage == 1)
             {
@@ -105,19 +106,15 @@ namespace DimmedLight.Gameplay.MainMenu
                 currentPageTexture = _tutorialPage3;
             }
 
-            // --- CHANGE IS HERE ---
-            // 3. บังคับให้วาดภาพลงในพื้นที่สี่เหลี่ยมขนาดเดียวกันเสมอ
+            // วาดภาพในกรอบขนาดคงที่
             if (currentPageTexture != null)
             {
-                // กำหนดขนาดและคำนวณตำแหน่งของกรอบที่จะวาดภาพลงไป
                 int destWidth = 1600;
                 int destHeight = 900;
-                int destX = (GraphicsDevice.Viewport.Width - destWidth) / 2;  // จัดกลางแนวนอน
-                int destY = (GraphicsDevice.Viewport.Height - destHeight) / 2; // จัดกลางแนวตั้ง
+                int destX = (GraphicsDevice.Viewport.Width - destWidth) / 2;
+                int destY = (GraphicsDevice.Viewport.Height - destHeight) / 2;
 
                 Rectangle destinationRectangle = new Rectangle(destX, destY, destWidth, destHeight);
-
-                // สั่งวาดภาพให้พอดีกับกรอบสี่เหลี่ยมที่กำหนดไว้
                 spriteBatch.Draw(currentPageTexture, destinationRectangle, Color.White);
             }
 
