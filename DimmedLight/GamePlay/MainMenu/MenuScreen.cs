@@ -77,11 +77,14 @@ namespace DimmedLight.Gameplay.MainMenu
             var keyboard = Keyboard.GetState();
             var gamePad = GamePad.GetState(PlayerIndex.One);
 
-            // --- เลื่อนลง/ขึ้น ---
+            // --- เลื่อนลง/ขึ้น (รองรับทั้ง D-Pad และ Analog Stick) ---
             bool movedDown = (keyboard.IsKeyDown(Keys.Down) && _previousKeyboardState.IsKeyUp(Keys.Down)) ||
-                                (gamePad.IsButtonDown(Buttons.DPadDown) && _previousGamePadState.IsButtonUp(Buttons.DPadDown));
+                             (gamePad.IsButtonDown(Buttons.DPadDown) && _previousGamePadState.IsButtonUp(Buttons.DPadDown)) ||
+                             (gamePad.ThumbSticks.Left.Y < -0.5f && _previousGamePadState.ThumbSticks.Left.Y >= -0.5f);
+
             bool movedUp = (keyboard.IsKeyDown(Keys.Up) && _previousKeyboardState.IsKeyUp(Keys.Up)) ||
-                                (gamePad.IsButtonDown(Buttons.DPadUp) && _previousGamePadState.IsButtonUp(Buttons.DPadUp));
+                           (gamePad.IsButtonDown(Buttons.DPadUp) && _previousGamePadState.IsButtonUp(Buttons.DPadUp)) ||
+                           (gamePad.ThumbSticks.Left.Y > 0.5f && _previousGamePadState.ThumbSticks.Left.Y <= 0.5f);
 
             if (movedDown)
             {
@@ -107,10 +110,10 @@ namespace DimmedLight.Gameplay.MainMenu
                 }
             }
 
-            // --- ยืนยัน ---
+            // --- ยืนยัน (รองรับทั้ง Mouse, Keyboard และ Gamepad) ---
             bool isConfirmPressed = (mouse.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released) ||
-                                      (keyboard.IsKeyDown(Keys.Enter) && _previousKeyboardState.IsKeyUp(Keys.Enter)) ||
-                                      (gamePad.IsButtonDown(Buttons.A) && _previousGamePadState.IsButtonUp(Buttons.A));
+                                    (keyboard.IsKeyDown(Keys.Enter) && _previousKeyboardState.IsKeyUp(Keys.Enter)) ||
+                                    (gamePad.IsButtonDown(Buttons.A) && _previousGamePadState.IsButtonUp(Buttons.A));
 
             if (isConfirmPressed)
             {
@@ -125,7 +128,6 @@ namespace DimmedLight.Gameplay.MainMenu
             _previousKeyboardState = keyboard;
             _previousGamePadState = gamePad;
         }
-
         private void ExecuteButtonAction(int buttonIndex)
         {
             switch (buttonIndex)
